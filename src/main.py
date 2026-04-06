@@ -16,6 +16,8 @@ from .session_store import load_session
 from .setup import run_setup
 from .tool_pool import assemble_tool_pool
 from .tools import execute_tool, get_tool, get_tools, render_tool_index
+from .todos import render_todos
+from .paste_parser import parse_paste_order
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -88,6 +90,10 @@ def build_parser() -> argparse.ArgumentParser:
     exec_tool_parser = subparsers.add_parser('exec-tool', help='execute a mirrored tool shim by exact name')
     exec_tool_parser.add_argument('name')
     exec_tool_parser.add_argument('payload')
+
+    subparsers.add_parser('todos', help='show the updated product todo list')
+    parse_paste_parser = subparsers.add_parser('parse-paste', help='parse pasted order text for price and prop firm')
+    parse_paste_parser.add_argument('text')
     return parser
 
 
@@ -205,6 +211,14 @@ def main(argv: list[str] | None = None) -> int:
         result = execute_tool(args.name, args.payload)
         print(result.message)
         return 0 if result.handled else 1
+    if args.command == 'todos':
+        print(render_todos())
+        return 0
+    if args.command == 'parse-paste':
+        parsed = parse_paste_order(args.text)
+        print(f'price={parsed.price}')
+        print(f'prop_firm={parsed.prop_firm}')
+        return 0
     parser.error(f'unknown command: {args.command}')
     return 2
 
