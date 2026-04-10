@@ -142,6 +142,24 @@ python3 -m src.main commands --limit 10
 python3 -m src.main tools --limit 10
 ```
 
+
+## Deploy on Vercel
+
+This repository now includes a lightweight Flask API entrypoint for Vercel:
+
+- `GET /` — health check + available endpoints
+- `GET /api/summary` — renders the current workspace summary
+- `GET /api/manifest` — returns module manifest in JSON (`?format=markdown` for markdown)
+
+Deploy steps:
+
+```bash
+npm i -g vercel
+vercel
+```
+
+Vercel will detect `vercel.json`, install Python dependencies from `requirements.txt`, and serve `api/index.py` as the runtime entrypoint.
+
 ## Current Parity Checkpoint
 
 The port now mirrors the archived root-entry file surface, top-level subsystem names, and command/tool inventories much more closely than before. However, it is **not yet** a full runtime-equivalent replacement for the original TypeScript system; the Python tree still contains fewer executable runtime slices than the archived source.
